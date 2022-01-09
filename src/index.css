@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+* {
+  box-sizing: border-box;
+}
+body {
+  background: #1C8EF9 !important;
+  min-height: 100vh;
+  display: flex;
+  font-weight: 400;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6,label,span {
+  font-weight: 500;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body, html, .App, #root, .auth-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.navbar-light {
+  background-color: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  width: 100vw !important
+}
+
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-inner {
+  width: 450px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 45px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.auth-wrapper .form-control:focus {
+  border-color: #167bff;
+  box-shadow: none;
+}
+
+.auth-wrapper h3 {
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+  padding-bottom: 20px;
+}
+
+.custom-control-label {
+  font-weight: 400;
+}
+
+.forgot-password,
+.forgot-password a {
+  text-align: right;
+  font-size: 13px;
+  padding-top: 10px;
+  color: #7f7d7d;
+  margin: 0;
+}
+
+.forgot-password a {
+  color: #167bff;
+}
+
+.li {
+  
+}
+li:hover {
+  text-decoration: underline black;
+  cursor: pointer;
+}
+
+.container-teacher {
+  /* display: flex;
+  flex-direction: column; */
+  margin: 40px 0px 20px 0px ;
+  
+  /* justify-content: space-between */
+} 
+
+.student-card {
+  background-color: white;
+  border: 1px solid black !important;
+  border-radius: 10px;
+  margin: 10px;
+  
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.add_task {
+  
+  margin-top: auto;
+  margin-bottom: 20px
+}
+
+.btn-block-all {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.container-student {
+  margin-top: 80px
+}
+
+ul {
+  list-style-type: none;
+  font-size: 20px;
+}
+
+.btn-confirm {
+  margin-top: 20px
+}
+
+.nav-end {
+  position: absolute;
+  right: 50px;
+  top: 5px
+}
+
+.teacher-row {
+  margin-left: 10% !important;
+  max-width: 75vw !important;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  color: var(--secondary-color);
+  background: var(--main-color);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  margin-right: 10px
+}
+
+.message {
+  margin: 15px 0;
+  text-decoration: none !important;
+}
+
+.message-sender {
+  font-size: 11px;
+  color: var(--main-text-color);
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+.message-text {
+  background: #5ea3d0;
+  color: white;
+  display: inline !important;
+  padding: 4px 8px !important;
+  border-radius: 8px;
+}
+
+.message-list {
+  box-sizing: border-box !important;
+  padding: 0 0 0 6px;
+  margin: 0;
+  width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  overflow: scroll;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  -ms-overflow-style: none !important;  
+  scrollbar-width: none !important;  
+}
+
+.message-mine {
+  margin: 10px 10px;
+  text-decoration: none !important;
+  align-self: end !important;
+}
+
+.message-text-mine {
+  color: white;
+  display: inline !important;
+  padding: 4px 8px !important;
+  border-radius: 8px;
+  background: green !important;
+}
+
+.send-message-form {
+  background: var(--send-message-form);
+  display: flex;
+  box-sizing: border-box;
+  height: 60px;
+  margin-top: 10px
+}
+
+.send-message-form input {
+  width: 100%;
+  padding: 15px 10px;
+  border: none;
+  margin: 0;
+  background: var(--send-message-form);
+  font-weight: 200;
+}
+
+.send-message-form input:focus {
+  outline-width: 0;
+}
+
+.send-message-form input::placeholder {
+  color: black;
+}
+
+.chat {
+  margin: 60px 10px;
+  
+}
+
+.message-list::-webkit-scrollbar {
+  display: none !important;
+}
+
+.chat-btn-content {
+  display: flex;
+}
+
+.chat-btn-text {
+  margin: 0 5px;
+}
+.chat-btn-icon {
+  margin-top: 3px
+}
+
+
+.message-sender-info {
+  margin: 0
+}
+
+.title-div {
+  display: flex;
+  justify-content: center;
+}
