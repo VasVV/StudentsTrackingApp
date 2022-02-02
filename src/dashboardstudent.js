@@ -159,11 +159,11 @@ export default function DashboardStudent() {
                                                                     id={currTaskVideo}
                                                                 />
                                                             </div> : ''}
-        
+                                                            {currTaskFile &&
                                                             <div className="form-group">
                                                                 <label>Файл</label>
                                                                 <a href={currTaskFile} className="form-control">Скачать {currTaskFileName}</a>
-                                                            </div>
+                                                            </div>}
 
                                                             <div className="form-group">
                                                                 <label>Решение</label>

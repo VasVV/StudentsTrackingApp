@@ -45,7 +45,8 @@ export default function Dashboard() {
     const [secondModalIsOpen, setSecondIsOpen] = useState(false);
     const [taskHeader, setTaskHeader] = useState('');
     const [taskVideo, setTaskVideo] = useState('');
-    const [taskStatus, setTaskStatus] = useState('');
+    const [taskUploading, setTaskUploading] = useState(null);
+    const [taskUploaded, setTaskUploaded] = useState(false);
 
     const [modalforAllIsOpen, setModalForAllIsOpen] = useState(false);
 
@@ -60,6 +61,7 @@ export default function Dashboard() {
         setIsOpen(false);
     }
 
+    
 
 
     function openSecondModal(element, uid) {
@@ -106,12 +108,22 @@ export default function Dashboard() {
 
     const handleTaskSubmit = async(e) => {
         e.preventDefault();
+        setTaskUploading(true);
+        if (taskFile) {
+            
         let {downloadUrl, fileName} = await uploadFile(taskFile);
-        console.log(downloadUrl);
-        console.log('FILENAME', fileName);
-        await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
-        
+            console.log(downloadUrl);
+            console.log('FILENAME', fileName);
+            await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+            
+        }
+        else {
+            let downloadUrl = false;
+            let fileName = false;
+            await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+        }
         await onAddTask(currStudent.email, currStudent.firstName, taskHeader);
+        setTaskUploading(false);
         getTasks();
         setTaskHeader('');
         setTaskVideo('');
@@ -145,11 +157,19 @@ export default function Dashboard() {
 
     const handleTaskSubmitForAll =  async (e) => {
         e.preventDefault();
+        setTaskUploading(true);
+        if (taskFile) {
         let {downloadUrl, fileName} = await uploadFile(taskFile);
     
-        await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+            await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+        } else {
+            let downloadUrl = false;
+            let fileName = false;
+            await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+        }
         
         await onAddTask(currStudent.email, currStudent.firstName, taskHeader);
+        setTaskUploading(false);
         getTasks();
         setTaskHeader('');
         setTaskVideo('');
@@ -202,7 +222,7 @@ export default function Dashboard() {
                                                         <input type="file" className="form-control" placeholder="Enter email" value={taskFile} onChange={(e) => setTaskFile(e.target.files[0])} />
                                                     </div>
 
-                                                    <button type="submit" className="btn btn-primary btn-block" >Добавить задание</button>
+                                                    <button type="submit" className="btn btn-primary btn-block" > {!taskUploading ? 'Добавить задание' : 'Задание добавляется...'} </button>
 
                                                 </form>
                                             </Modal>
@@ -328,7 +348,7 @@ export default function Dashboard() {
                                                         <input type="file" className="form-control"  onChange={(e) => setTaskFile(e.target.files[0])} />
                                                     </div>
 
-                                                    <button type="submit" className="btn btn-primary btn-block" >Добавить задание</button>
+                                                    <button type="submit" className="btn btn-primary btn-block" > {!taskUploading ? 'Добавить задание' : 'Задание добавляется...'}</button>
 
                                                 </form>
                                             </Modal>
