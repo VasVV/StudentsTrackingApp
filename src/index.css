@@ -252,3 +252,7 @@ ul {
   display: flex;
   justify-content: center;
 }
+
+.btn-loading {
+  display: flex  !important;
+}

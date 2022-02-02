@@ -11,7 +11,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { onAddTask } from './email';
-import { Rating } from 'react-simple-star-rating'
+import { Rating } from 'react-simple-star-rating';
+import { Oval } from 'react-loader-spinner';
 
 const customStyles = {
     content: {
@@ -124,12 +125,22 @@ export default function Dashboard() {
         }
         await onAddTask(currStudent.email, currStudent.firstName, taskHeader);
         setTaskUploading(false);
+        setTaskUploaded(true);
         getTasks();
         setTaskHeader('');
         setTaskVideo('');
         setTaskText('');
         setTaskFile('');
     }
+
+    useEffect(() => {
+        if (taskUploaded) {
+        setTimeout(() => {
+            setTaskUploaded(false);
+        }, 2000);
+    }
+        
+    }, [taskUploaded])
 
     const getTasks = async() => {
         const tasksList = await getTasksList();
@@ -170,6 +181,7 @@ export default function Dashboard() {
         
         await onAddTask(currStudent.email, currStudent.firstName, taskHeader);
         setTaskUploading(false);
+        setTaskUploaded(true);
         getTasks();
         setTaskHeader('');
         setTaskVideo('');
@@ -199,6 +211,10 @@ export default function Dashboard() {
                                                 contentLabel="Example Modal"
                                             >
                                                 <h2 >Добавить задание для всего курса </h2>
+                                                {taskUploaded && <div class="alert alert-success" role="alert">
+                                                                        This is a success alert—check it out!
+                                                                        Задание добавлено успешно!
+                                                                        </div>}
                                                 <button type="button" class="btn btn-danger" onClick={() => setModalForAllIsOpen(false)}>Закрыть</button>
                                                 <form onSubmit={(e) => handleTaskSubmitForAll(e)}>
 
@@ -222,7 +238,11 @@ export default function Dashboard() {
                                                         <input type="file" className="form-control" placeholder="Enter email" value={taskFile} onChange={(e) => setTaskFile(e.target.files[0])} />
                                                     </div>
 
-                                                    <button type="submit" className="btn btn-primary btn-block" > {!taskUploading ? 'Добавить задание' : 'Задание добавляется...'} </button>
+                                                    <button type="submit" className="btn btn-primary btn-block btn-loading" >
+                                                         {taskUploading && <Oval height={20} width={20} color={'white'} />}
+                                                         <div> {!taskUploading ? 'Добавить задание' : `Задание добавляется...`} </div>
+                                                         
+                                                          </button>
 
                                                 </form>
                                             </Modal>
@@ -326,6 +346,10 @@ export default function Dashboard() {
                                             >
                                                 <h2 >Добавить задание для студента {currStudent?.firstName} {currStudent?.lastName} </h2>
                                                 <button type="button" class="btn btn-danger" onClick={closeModal}>Закрыть</button>
+                                                {taskUploaded && <div class="alert alert-success" role="alert">
+                                                                        
+                                                                        Задание добавлено успешно!
+                                                                        </div>}
                                                 <form onSubmit={(e) => handleTaskSubmit(e)}>
 
                                                 <div className="form-group">
@@ -348,7 +372,10 @@ export default function Dashboard() {
                                                         <input type="file" className="form-control"  onChange={(e) => setTaskFile(e.target.files[0])} />
                                                     </div>
 
-                                                    <button type="submit" className="btn btn-primary btn-block" > {!taskUploading ? 'Добавить задание' : 'Задание добавляется...'}</button>
+                                                    <button type="submit" className="btn btn-primary btn-block btn-loading" > 
+                                                        {taskUploading && <Oval height={20} width={20} />}
+                                                        <div>{!taskUploading ? 'Добавить задание' : ` Задание добавляется...`}</div>
+                                                    </button>
 
                                                 </form>
                                             </Modal>
