@@ -36,13 +36,13 @@ export default function CheckTask({currTask, studentData, closeModal, getTasks})
                 <label>Текст или ссылка на задание</label>
                 <input readOnly type="text" className="form-control" value={currTask.text} />
             </div>
-                {currTask.video == 'false' ?
+                {currTask.video &&
             <div className="form-group">
                 <label>Видео</label>
                 <LiteYouTubeEmbed 
                     id={currTask.video}
                 />
-            </div> : ''}
+            </div> }
 
             {currTask.attachedFile == 'false' ?
                 <div className="form-group">

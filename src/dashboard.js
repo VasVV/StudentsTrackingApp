@@ -14,6 +14,8 @@ import {
   faExclamationTriangle,
   faSpinner,
   faCheckCircle,
+  faEnvelope,
+  faPhone
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -22,6 +24,8 @@ const customStyles = {
   content: {
     top: "50%",
     left: "50%",
+    width: '50vw',
+    maxHeight: '80vh',
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
@@ -131,14 +135,45 @@ export default function Dashboard() {
         <div className="row teacher-row">
           {students.map((e) => {
             return (
-              <div className="col-3 student-card">
+              <div className="col-sm student-card">
                 <div className="header">
                   <h3>{e.lastName}</h3>
-                  <h3>{e.firstName}</h3>
-                  <p>{e.email}</p>
-                  <p>{e.phone}</p>
+                  <h4>{e.firstName}</h4>
+                  <p className="info">
+                     <FontAwesomeIcon icon={faEnvelope} />    
+                    <a className="email" href={`mailto:${e.email}`}>{e.email}</a>
+                  </p>
+                  <p className="info"> 
+                      <FontAwesomeIcon icon={faPhone} />
+                      <span className="phone">{e.phone}</span>
+                  </p>
                 </div>
                 <div className="content">
+                <div className="add_task">
+                  <button
+                    type="button"
+                    className="btn btn-success btn-addtask"
+                    onClick={() => addTask(e)}
+                  >
+                    Добавить задание
+                  </button>
+                  <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                  >
+                    <AddSingleTask
+                      firstName={currStudent?.firstName}
+                      lastName={currStudent?.lastName}
+                      email={currStudent?.email}
+                      currId={currId}
+                      closeModal={closeModal}
+                      getTasks={() => getTasks()}
+                      forAll={false}
+                    />
+                  </Modal>
+                </div>
                   <ul>
                     {tasks.map((el) => {
                       if (el[0] == e.id) {
@@ -175,31 +210,6 @@ export default function Dashboard() {
                       closeModal={closeSecondModal}
                       getTasks={() => getTasks()}
                       taskHeader={currTask.header}
-                    />
-                  </Modal>
-                </div>
-                <div className="add_task">
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={() => addTask(e)}
-                  >
-                    Добавить задание
-                  </button>
-                  <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                  >
-                    <AddSingleTask
-                      firstName={currStudent?.firstName}
-                      lastName={currStudent?.lastName}
-                      email={currStudent?.email}
-                      currId={currId}
-                      closeModal={closeModal}
-                      getTasks={() => getTasks()}
-                      forAll={false}
                     />
                   </Modal>
                 </div>
