@@ -139,6 +139,10 @@ li:hover {
 ul {
   list-style-type: none;
   font-size: 20px;
+  padding-left: 0 !important;
+  &.hide-task-list {
+    display: none;
+  }
 }
 
 .btn-confirm {
@@ -281,4 +285,13 @@ ul {
   &-addtask {
     width: 100% !important;
   }
+  &-showhide {
+    display: none !important;
+  }
+  @media only screen and (max-width: 768px) {
+    &-showhide {
+      display: initial !important;
+      margin-bottom: 20px;
+    }
+}
 }

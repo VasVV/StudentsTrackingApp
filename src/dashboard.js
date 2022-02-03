@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   getStudentsList,
@@ -15,7 +15,9 @@ import {
   faSpinner,
   faCheckCircle,
   faEnvelope,
-  faPhone
+  faPhone,
+  faArrowDown,
+  faArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -34,6 +36,9 @@ const customStyles = {
 };
 
 export default function Dashboard() {
+
+    const listRef = useRef([]);
+
     const history = useHistory();
     const currUser = useSelector((state) => state.addremovecurruser);
     if (!currUser.admin) {
@@ -49,6 +54,30 @@ export default function Dashboard() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [secondModalIsOpen, setSecondIsOpen] = useState(false);
   const [taskUploaded, setTaskUploaded] = useState(false);
+  const [showTaskList, setShowTaskList] = useState(false);
+  const [hiddenElements, setHiddenElements] = useState([]);
+
+  useEffect(() => {
+      if (listRef.current) {
+        listRef.current.map(ul => hiddenElements.includes(ul.id) ? ul.className ='hide-task-list' : ul);
+         if (hiddenElements.includes(listRef.current.id)) {
+          listRef.current.className+='hide-task-list';
+         }
+      }
+     
+  }, [showTaskList])
+
+  const setHidden = (elem) => {
+      if (!hiddenElements.includes(elem) ) {
+        setHiddenElements(prevState => [...prevState, elem]);
+      }
+       else {
+        setHiddenElements(prevState => (
+          prevState.filter((e) => e !== elem)
+        ));
+      }
+      setShowTaskList(!showTaskList);
+  }
 
   const [currId, setCurrId] = useState("");
 
@@ -133,7 +162,7 @@ export default function Dashboard() {
           </Modal>
         </div>
         <div className="row teacher-row">
-          {students.map((e) => {
+          {students.map((e,i) => {
             return (
               <div className="col-sm student-card">
                 <div className="header">
@@ -174,7 +203,8 @@ export default function Dashboard() {
                     />
                   </Modal>
                 </div>
-                  <ul>
+                    <button className="btn btn-success btn-showhide" onClick={() => setHidden(e.id)}> {!hiddenElements.includes(e.id)  ? <>Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <>Развернуть <FontAwesomeIcon icon={faArrowDown} /> </>} </button>
+                  <ul className={!showTaskList && `hide-task-list-${e.id}`} ref={(element) => {listRef.current[i] = element}} id={e.id}>
                     {tasks.map((el) => {
                       if (el[0] == e.id) {
                         return el[1]["tasks"].map((element) => (
