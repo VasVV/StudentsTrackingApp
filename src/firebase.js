@@ -109,7 +109,7 @@ export async function addTaskToDb(uid, text, attachedFile, fileName, header, vid
       const querySnapshot = await getDocs(collection(db, "task"));
       querySnapshot.forEach((document) => {
         let newData = document.data();
-        newData.tasks.push({text, header, attachedFile, fileName, video});
+        newData.tasks.push({text, header, attachedFile, fileName, video, status: 'toBeDone'});
         const docRef = doc(db, "task", document.id);
         
         setDoc(docRef, newData);
@@ -150,6 +150,7 @@ export async function getTasksList() {
   }
 }
 
+
 export async function addSolutionToDb(uid, header, solution) {
   try {
     const docRef = doc(db, "task", uid);
@@ -175,6 +176,7 @@ export async function addSolutionToDb(uid, header, solution) {
 
 export async function confirmTask(uid, header, status, rating, commentary) {
   try {
+
     const docRef = doc(db, "task", uid);
     const docSnap = await getDoc(docRef);
     let data = docSnap.data();
@@ -182,10 +184,10 @@ export async function confirmTask(uid, header, status, rating, commentary) {
     data.tasks.map(e => {
       if (e.header == header) {
         e.status = status;
-        if (e.rating) {
+        if (rating) {
         e.rating = rating;
         }
-        if (e.commentary) {
+        if (commentary) {
         e.commentary = commentary;
         }
       }
