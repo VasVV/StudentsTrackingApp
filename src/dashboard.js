@@ -9,7 +9,7 @@ import AddSingleTask from "./addsingletask";
 import CheckTask from "./checktask";
 import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import {useHistory} from 'react-router-dom';
 import {
   faExclamationTriangle,
   faSpinner,
@@ -30,6 +30,13 @@ const customStyles = {
 };
 
 export default function Dashboard() {
+    const history = useHistory();
+    const currUser = useSelector((state) => state.addremovecurruser);
+    if (!currUser.admin) {
+        history.push('/sign-in');
+    }
+
+
   const [students, setStudents] = useState([]);
 
   const [currStudent, setCurrStudent] = useState({});
@@ -65,7 +72,7 @@ export default function Dashboard() {
     setSecondIsOpen(false);
   }
 
-  const currUser = useSelector((state) => state.addremovecurruser);
+ 
 
   const getStudents = async () => {
     const studentsList = await getStudentsList();
@@ -146,7 +153,7 @@ export default function Dashboard() {
                               {element.status == "checking" && <FontAwesomeIcon icon={faSpinner} />}
 
                               {element.status == "completed" && <FontAwesomeIcon icon={faCheckCircle} />}
-                              
+
                               <span onClick={() => setSecondIsOpen(true)}>
                                 {element.header}
                               </span>
