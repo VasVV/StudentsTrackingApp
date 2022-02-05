@@ -19,14 +19,18 @@ import {
   faArrowDown,
   faArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
+import useMobileDetect from 'use-mobile-detect-hook';
 
 
+export default function Dashboard() {
+
+  const detectMobile = useMobileDetect();
 
 const customStyles = {
   content: {
     top: "50%",
     left: "50%",
-    width: '50vw',
+    width: detectMobile.isMobile() ? '95vw' : '50vw',
     maxHeight: '80vh',
     right: "auto",
     bottom: "auto",
@@ -34,8 +38,6 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
 };
-
-export default function Dashboard() {
 
     const listRef = useRef([]);
 
@@ -56,10 +58,16 @@ export default function Dashboard() {
   const [taskUploaded, setTaskUploaded] = useState(false);
   const [showTaskList, setShowTaskList] = useState(false);
   const [hiddenElements, setHiddenElements] = useState([]);
+  
+  useEffect(() => {
+    getStudents();
+    getTasks();
+  }, []);
+  
 
   useEffect(() => {
       if (listRef.current) {
-        listRef.current.map(ul => hiddenElements.includes(ul.id) ? ul.className ='hide-task-list' : ul);
+        listRef.current.map(ul => hiddenElements.includes(ul.id) ? ul.className ='' : ul.className = 'hide-task-list');
          if (hiddenElements.includes(listRef.current.id)) {
           listRef.current.className+='hide-task-list';
          }
@@ -131,10 +139,7 @@ export default function Dashboard() {
     setTasks(tasksList);
   };
 
-  useEffect(() => {
-    getStudents();
-    getTasks();
-  }, []);
+  
 
   return (
     <div className="dashboard">
@@ -164,7 +169,7 @@ export default function Dashboard() {
         <div className="row teacher-row">
           {students.map((e,i) => {
             return (
-              <div className="col-sm student-card">
+              <div className="col-sm-3 student-card">
                 <div className="header">
                   <h3>{e.lastName}</h3>
                   <h4>{e.firstName}</h4>
@@ -203,8 +208,8 @@ export default function Dashboard() {
                     />
                   </Modal>
                 </div>
-                    <button className="btn btn-success btn-showhide" onClick={() => setHidden(e.id)}> {!hiddenElements.includes(e.id)  ? <>Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <>Развернуть <FontAwesomeIcon icon={faArrowDown} /> </>} </button>
-                  <ul className={!showTaskList && `hide-task-list-${e.id}`} ref={(element) => {listRef.current[i] = element}} id={e.id}>
+                  <button className="btn btn-success btn-showhide" onClick={() => setHidden(e.id)}> {hiddenElements.includes(e.id)  ? <>Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <>Развернуть <FontAwesomeIcon icon={faArrowDown} /> </>} </button>
+                  <ul className={'hide-task-list'} ref={(element) => {listRef.current[i] = element}} id={e.id}>
                     {tasks.map((el) => {
                       if (el[0] == e.id) {
                         return el[1]["tasks"].map((element) => (

@@ -82,18 +82,26 @@ li:hover {
   cursor: pointer;
 }
 
-.container-teacher {
-  /* display: flex;
-  flex-direction: column; */
-  margin: 50px 0px 20px 10vw ;
-  
+.container {
+
+  &-teacher{
+    margin: 50px 0px 20px 10vw ;
+  }
+  &-student{
+    margin: 5%
+  }
   /* justify-content: space-between */
 } 
 
 .student-card {
+  &-single {
+    box-shadow: 13px 18px 24px 2px rgba(34, 60, 80, 0.6) !important;
+    background-color: rgba(255, 255, 255, 0.747);
+    border-radius: 12px !important;
+  }
   background-color: rgba(255, 255, 255, 0.747);
   border: 1px solid black !important;
-  border-radius: 10px;
+  border-radius: 12px !important;
   margin: 10px;
   &:hover {
     box-shadow: 13px 18px 24px 2px rgba(34, 60, 80, 0.6) !important;
@@ -140,9 +148,11 @@ ul {
   list-style-type: none;
   font-size: 20px;
   padding-left: 0 !important;
-  &.hide-task-list {
-    display: none;
-  }
+  @media only screen and (max-width: 768px) {
+    &.hide-task-list {
+      display: none;
+    }
+}
 }
 
 .btn-confirm {
