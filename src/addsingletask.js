@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Oval } from 'react-loader-spinner';
 import { addTaskToDb, uploadFile } from './firebase';
 import { onAddTask } from './email';
@@ -11,6 +11,10 @@ export default function AddSingleTask({firstName, lastName, currId, email, close
     const [taskVideo, setTaskVideo] = useState('');
     const [taskUploading, setTaskUploading] = useState(null);
     const [taskUploaded, setTaskUploaded] = useState(false);
+
+    useEffect(() => {
+        console.log(taskFile)
+    }, [taskFile])
 
     const handleTaskSubmitForAll =  async (e) => {
         e.preventDefault();
@@ -39,11 +43,16 @@ export default function AddSingleTask({firstName, lastName, currId, email, close
         e.preventDefault();
         setTaskUploading(true);
         if (taskFile) {
+            if (taskFile.length  === 1) {
+                let {downloadUrl, fileName} = await uploadFile(taskFile);
+                console.log(downloadUrl);
+                console.log('FILENAME', fileName);
+                await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
+            } else {
+                let {fileList, fileNames} = await uploadFile(taskFile);
+                await addTaskToDb(currId, taskText, fileList, fileNames, taskHeader, taskVideo);
+            }
             
-        let {downloadUrl, fileName} = await uploadFile(taskFile);
-            console.log(downloadUrl);
-            console.log('FILENAME', fileName);
-            await addTaskToDb(currId, taskText, downloadUrl, fileName, taskHeader, taskVideo);
             
         }
         else {
@@ -70,8 +79,8 @@ export default function AddSingleTask({firstName, lastName, currId, email, close
     return (
         <>
             <h2 > Добавить задание для {firstName ? ` студента ${firstName} ${lastName}` : `всего курса`} </h2>
-            <button type="button" class="btn btn-danger" onClick={closeModal}>Закрыть</button>
-            {taskUploaded && <div class="alert alert-success" role="alert">
+            <button type="button" className="btn btn-danger" onClick={closeModal}>Закрыть</button>
+            {taskUploaded && <div className="alert alert-success" role="alert">
                                     
                                     Задание добавлено успешно!
                                     </div>}
@@ -94,7 +103,7 @@ export default function AddSingleTask({firstName, lastName, currId, email, close
 
                 <div className="form-group">
                     <label>Файл</label>
-                    <input type="file" className="form-control"  onChange={(e) => setTaskFile(e.target.files[0])} />
+                    <input type="file" className="form-control"  onChange={(e) => setTaskFile(e.target.files)} multiple />
                 </div>
 
                 <button type="submit" className="btn btn-primary btn-block btn-loading" > 

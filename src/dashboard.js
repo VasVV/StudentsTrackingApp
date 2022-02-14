@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useMobileDetect from 'use-mobile-detect-hook';
 
-
+Modal.setAppElement('*')
 export default function Dashboard() {
 
   const detectMobile = useMobileDetect();
@@ -31,7 +31,7 @@ const customStyles = {
     top: "50%",
     left: "50%",
     width: detectMobile.isMobile() ? '95vw' : '50vw',
-    maxHeight: '80vh',
+    height: '80vh',
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
@@ -169,7 +169,7 @@ const customStyles = {
         <div className="row teacher-row">
           {students.map((e,i) => {
             return (
-              <div className="col-sm-3 student-card">
+              <div className="col-sm-3 student-card" key={i}>
                 <div className="header">
                   <h3>{e.lastName}</h3>
                   <h4>{e.firstName}</h4>
@@ -209,13 +209,14 @@ const customStyles = {
                   </Modal>
                 </div>
                   <button className="btn btn-success btn-showhide" onClick={() => setHidden(e.id)}> {hiddenElements.includes(e.id)  ? <>Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <>Развернуть <FontAwesomeIcon icon={faArrowDown} /> </>} </button>
-                  <ul className={'hide-task-list'} ref={(element) => {listRef.current[i] = element}} id={e.id}>
-                    {tasks.map((el) => {
+                  <ul className={'hide-task-list'} ref={(element) => {listRef.current[i] = element}} id={e.id} key={i}>
+                    {tasks?.map((el,ind) => {
                       if (el[0] == e.id) {
                         return el[1]["tasks"].map((element) => (
                           <>
                             <li
                               className="tasks-list"
+                              key={ind}
                               onClick={() => openSecondModal(element, e)}
                             >
                               {element.status == "toBeDone" && <FontAwesomeIcon icon={faExclamationTriangle} />}

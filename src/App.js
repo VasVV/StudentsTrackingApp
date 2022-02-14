@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Login from './login';
@@ -29,7 +30,10 @@ function App() {
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container">
           <Link className="navbar-brand" to={"/sign-in"}>Тренинги Настасьи Вахтиной</Link>
-          <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarToggler">
             <ul className="navbar-nav ml-auto">
               {Object.entries(currUser).length === 0 ? 
               <>
@@ -54,11 +58,14 @@ function App() {
               <li className="nav-item nav-start">
                 <Link className="nav-link" to={"/chat"}>Чат</Link>
               </li>
-              <li className="nav-item nav-end">
-                <Link className="nav-link" to={"/sign-in"} onClick={() => handleLogOut()}>Выйти</Link>
-            </li>
+              
             </>
             }
+            </ul>
+            <ul className="navbar-nav ms-auto">
+                <li className="nav-item nav-end">
+                  <Link className="nav-link" to={"/sign-in"} onClick={() => handleLogOut()}>Выйти</Link>
+              </li>
             </ul>
           </div>
         </div>

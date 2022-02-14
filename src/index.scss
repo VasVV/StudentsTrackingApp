@@ -159,11 +159,7 @@ ul {
   margin-top: 20px
 }
 
-.nav-end {
-  position: absolute;
-  right: 50px;
-  top: 5px
-}
+
 
 .teacher-row {
   
@@ -304,4 +300,9 @@ ul {
       margin-bottom: 20px;
     }
 }
+}
+
+.file-edit {
+  display: flex;
+  justify-content: space-between;
 }

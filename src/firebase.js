@@ -94,6 +94,35 @@ export async function getStudentsList() {
   }
 }
 
+export async function editTask(uid, header, text, video, attachedFile, fileName ) {
+  try {
+    const docRef = doc(db, "task", uid);
+    const docSnap = await getDoc(docRef);
+    let data = docSnap.data();
+    
+   
+    data.tasks.map(e => {
+      if (e.header == header) {
+        e.text = text;
+        e.video = video;
+        e.attachedFile = attachedFile;
+        e.fileName = fileName;
+      }
+    });
+    
+    await setDoc(doc(db, "task", uid), { 
+      tasks: data.tasks
+     }); 
+    
+  } catch(err) {
+    console.log(err);
+  }
+ 
+ 
+}
+
+
+
 export async function addTaskToDb(uid, text, attachedFile, fileName, header, video) {
   if (!video) {
     video = false
@@ -105,6 +134,7 @@ export async function addTaskToDb(uid, text, attachedFile, fileName, header, vid
     fileName = false
   }
   try {
+    //for all
     if (!uid) { 
       const querySnapshot = await getDocs(collection(db, "task"));
       querySnapshot.forEach((document) => {
@@ -135,6 +165,8 @@ export async function addTaskToDb(uid, text, attachedFile, fileName, header, vid
   }
 };
 
+
+
 export async function getTasksList() {
   try {
     let allTasks = [];
@@ -150,21 +182,27 @@ export async function getTasksList() {
   }
 }
 
-
-export async function addSolutionToDb(uid, header, solution) {
+export async function addSolutionToDb(uid, header, solution, solutionFile, solutionFileName) {
   try {
     const docRef = doc(db, "task", uid);
     const docSnap = await getDoc(docRef);
     let data = docSnap.data();
-    
-   
+    if (solutionFile) {
+      data.tasks.map(e => {
+        if (e.header == header) {
+          e.solution = solution
+          e.solutionFile = solutionFile
+          e.solutionFileName = solutionFileName
+        }})
+    }
+    else {
     data.tasks.map(e => {
       if (e.header == header) {
         e.solution = solution
       }
     });
-    console.log('!!!!!!!!!!')
-    console.log(uid, header, solution);
+    
+    }
     await setDoc(doc(db, "task", uid), { 
       tasks: data.tasks
      }); 
@@ -205,21 +243,38 @@ export async function confirmTask(uid, header, status, rating, commentary) {
 
 export async function uploadFile(file) {
   try {
-
     let downloadUrl;
    
-  const fileRef = ref(storage, `files/${file.name}`);
-  
-  const storageRef = ref(storage, `files/${file.name}`);
+    
+    if (file.length === 1) {
+      console.log('file-name-firebase', file[0]['name']);
 
-  await uploadBytes(storageRef, file);
+      const storageRef = ref(storage, `files/${file[0].name}`);
+      await uploadBytes(storageRef, file[0]);
 
-  await getDownloadURL(ref(storage, `files/${file.name}`)).then((url) => {
-    downloadUrl = url;
-  })
+      await getDownloadURL(ref(storage, `files/${file[0].name}`)).then((url) => {
+        downloadUrl = url;
+      })
+      return {downloadUrl, fileName: file[0].name};
+    }
+    else {
+      let fileList = [];
+      let fileNames = [];
+      for (var i = 0; i < file.length; i++) {
+        const thisfile = file[i];
 
-  return {downloadUrl, fileName: file.name};
+        const storageRef = ref(storage, `files/${thisfile.name}`);
 
+        await uploadBytes(storageRef, thisfile);
+
+        await getDownloadURL(ref(storage, `files/${thisfile.name}`)).then((url) => {
+          fileList.push(url);
+          fileNames.push(thisfile.name)
+        })
+    }
+
+    return {fileList, fileNames};
+    }
   } catch(err) {
     console.log(err);
   }
@@ -259,5 +314,30 @@ export async function getMessagesFromDb() {
     return messages;
   } catch(err) {
     console.log(err);
+  }
+}
+
+export async function deleteFileFromDb(uid, taskHeader, fileName, fileLink) {
+  try {
+
+
+    const docRef = doc(db, "task", uid);
+    const docSnap = await getDoc(docRef);
+    let data = docSnap.data();
+    console.log(data)
+
+    data.tasks.map(e => {
+      if (e.header === taskHeader) {
+        e['attachedFile'] = e['attachedFile'].filter(el => el !== fileLink);
+        e['fileName'] = e['fileName'].filter(el => el !== fileName);
+      }
+    });
+    console.log(data);
+    await setDoc(doc(db, "task", uid), { 
+      tasks: data.tasks
+     }); 
+
+  } catch(err) {
+    console.log(err)
   }
 }
