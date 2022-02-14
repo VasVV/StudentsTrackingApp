@@ -7,6 +7,8 @@ import {Recorder} from 'react-voice-recorder'
 import 'react-voice-recorder/dist/index.css';
 import { useRecordWebcam, CAMERA_STATUS } from 'react-record-webcam';
 import { Oval } from 'react-loader-spinner';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function SubmitSolution({currTask, currUser, closeSecondModal, loadTasks}) {
   const recordWebcam = useRecordWebcam();
@@ -16,6 +18,8 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
     const [disableAfterAudio, setDisableAfterAudio] = useState(false);
     const [solutionUploading, setSolutionUploading] = useState(null);
     const [solutionUploaded, setSolutionUploaded] = useState(false);
+    const [audioShow, setAudioShow] = useState(false);
+    const [videoShow, setVideoShow] = useState(false);
     const [audioDetails, setAudioDetails] = useState({
       url: null,
       blob: null,
@@ -236,8 +240,10 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
         {solutionUploading && <Oval height={20} width={20} />} {!solutionUploading ? 'Отправить решение на проверку' : 'Решение отправляется...'}
       </button>}
     </form>
-    {currTask.status === 'toBeDone' && <div className="audio-video">
-      <div className="form-group">
+    {currTask.status === 'toBeDone' && 
+    <div className="audio-video">
+      <button className="btn btn-primary showHideAudioVideo" onClick={() => setAudioShow(!audioShow)}> Приложить Aудиозапись{audioShow ? <> Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <> Развернуть <FontAwesomeIcon icon={faArrowDown} /></>} </button>
+      <div className={!audioShow ? 'form-group hide' : 'form-group' }>
           <label>Приложить аудиозапись</label>
           <ol>
           <li> Нажимаем кнопку записи (красную с микрофоном) </li>
@@ -255,7 +261,9 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
             mimeTypeToUseWhenRecording={'audio/webm'}
             />
         </div>
-        <div className="form-group">
+       
+        <button className="btn btn-primary showHideAudioVideo" onClick={() => setVideoShow(!videoShow)}> Приложить Видеозапись{videoShow ? <> Свернуть <FontAwesomeIcon icon={faArrowUp} /> </> : <> Развернуть <FontAwesomeIcon icon={faArrowDown} /></>} </button>
+        <div className={!videoShow ? 'form-group hide' : 'form-group' }>
         <label>Приложить видеозапись</label>
           <ol>
             <li>Нажимаем кнопку старт, разрешаем доступ к камере</li>
@@ -272,7 +280,8 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
         <video ref={recordWebcam.webcamRef} autoPlay muted />
         <video ref={recordWebcam.previewRef} autoPlay muted loop />
       </div>
-    </div>}
+      </div>
+    }
 </>
   );
 }

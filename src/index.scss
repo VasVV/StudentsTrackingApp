@@ -294,6 +294,7 @@ ul {
   &-showhide {
     display: none !important;
   }
+
   @media only screen and (max-width: 768px) {
     &-showhide {
       display: initial !important;
@@ -305,4 +306,24 @@ ul {
 .file-edit {
   display: flex;
   justify-content: space-between;
+}
+
+.hide {
+  display: none !important;
+}
+
+.showHideAudioVideo {
+  margin: 10px 0;
+  display: block !important;
+}
+
+.trash-btn {
+  margin-left: 2px;
+  height: 30% !important;
+}
+
+.tasks-list-item {
+  display: flex;
+  justify-content: space-between; 
+  margin-bottom: 5px
 }

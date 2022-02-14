@@ -121,7 +121,21 @@ export async function editTask(uid, header, text, video, attachedFile, fileName 
  
 }
 
-
+export async function deleteTask(uid, taskName) {
+  try {
+    const docRef = doc(db, "task", uid);
+    const docSnap = await getDoc(docRef);
+    let data = docSnap.data();
+    console.log('docsnap data', data);
+    data.tasks = data.tasks.filter(e => e.header !== taskName );
+    console.log('data afeter deletion', data);
+    await setDoc(doc(db, "task", uid), { 
+      tasks: data.tasks
+     }); 
+  } catch(err) {
+    console.log(err)
+  }
+}
 
 export async function addTaskToDb(uid, text, attachedFile, fileName, header, video) {
   if (!video) {

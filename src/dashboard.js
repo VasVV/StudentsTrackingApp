@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import {
   getStudentsList,
   getTasksList,
+  deleteTask
 } from "./firebase";
 import Modal from "react-modal";
 import AddSingleTask from "./addsingletask";
@@ -18,6 +19,7 @@ import {
   faPhone,
   faArrowDown,
   faArrowUp,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import useMobileDetect from 'use-mobile-detect-hook';
 
@@ -111,6 +113,11 @@ const customStyles = {
 
   function closeSecondModal() {
     setSecondIsOpen(false);
+  }
+
+  const deleteTaskF = async (id, taskName) => {
+    await deleteTask(id, taskName);
+    await getTasks();
   }
 
  
@@ -213,7 +220,7 @@ const customStyles = {
                     {tasks?.map((el,ind) => {
                       if (el[0] == e.id) {
                         return el[1]["tasks"].map((element) => (
-                          <>
+                          <div className='tasks-list-item'>
                             <li
                               className="tasks-list"
                               key={ind}
@@ -228,8 +235,10 @@ const customStyles = {
                               <span onClick={() => setSecondIsOpen(true)}>
                                 {element.header}
                               </span>
+                             
                             </li>
-                          </>
+                            <button className='btn btn-danger trash-btn' onClick={() => deleteTaskF(e.id, element.header)}><FontAwesomeIcon icon={faTrash} /></button>
+                          </div>
                         ));
                       }
                     })}
