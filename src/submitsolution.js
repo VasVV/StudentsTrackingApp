@@ -5,18 +5,17 @@ import LiteYouTubeEmbed from 'react-lite-youtube-embed';
 import { status } from './helpers';
 import {Recorder} from 'react-voice-recorder'
 import 'react-voice-recorder/dist/index.css';
-import { useRecordWebcam, CAMERA_STATUS } from 'react-record-webcam'
+import { useRecordWebcam, CAMERA_STATUS } from 'react-record-webcam';
+import { Oval } from 'react-loader-spinner';
 
 export default function SubmitSolution({currTask, currUser, closeSecondModal, loadTasks}) {
   const recordWebcam = useRecordWebcam();
-  useEffect(() => {
-    console.log( recordWebcam)
-  }, [recordWebcam])
-
 
     const [solution, setSolution] = useState('');
     const [solutionFile, setSolutionFile] = useState(null);
     const [disableAfterAudio, setDisableAfterAudio] = useState(false);
+    const [solutionUploading, setSolutionUploading] = useState(null);
+    const [solutionUploaded, setSolutionUploaded] = useState(false);
     const [audioDetails, setAudioDetails] = useState({
       url: null,
       blob: null,
@@ -27,6 +26,10 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
         s: null,
       }
       });
+
+      useEffect(() => {
+        setSolution(currTask.solution)
+      }, [])
 
       const saveFile = async () => {
         const blob = await recordWebcam.getRecording();
@@ -71,6 +74,7 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
 
     const handleSubmitSolution = async e => {
         e.preventDefault();
+        setSolutionUploading(true)
 
         if (solutionFile) {
           if (solutionFile.length  === 1) {
@@ -88,12 +92,18 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
         }
         await confirmTask(currUser.id, currTask.header, 'checking');
         loadTasks();
+        setSolutionUploading(false)
+        setSolutionUploaded(true);
     }
 
   return (
 <>
     <h2>Задание для студента {currUser.firstName} {currUser.lastName}</h2>
-    <button type="button" Name="btn btn-danger" onClick={closeSecondModal}>Закрыть</button>
+    <button type="button" className="btn btn-danger" onClick={closeSecondModal}>Закрыть</button>
+    {solutionUploaded && <div className="alert alert-success" role="alert">
+                                    
+                                    Решение отправлено!
+                                    </div>}
     <form onSubmit={(e) => handleSubmitSolution(e)}>
       <div className="form-group">
         <label>Название задания</label>
@@ -136,22 +146,24 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
       ) : (
         ""
       )}
-      {!Array.isArray(currTask.fileName) ? (
-        <div className="form-group">
-          <label>Файл</label>
-          <a href={currTask.attachedFile} className="form-control">
-            Скачать {currTask.fileName}
-          </a>
-        </div>
-      ): currTask.attachedFile.map((e,i) => {
-        return (
-            <p className="form-control" >
-            <a target="blank" href={e}>
-                {currTask.fileName[i] || 'файл'}</a></p>
-        )
-    })
-    }
-
+      
+     { currTask.fileName && <>
+        {!Array.isArray(currTask.fileName) ? (
+          <div className="form-group">
+            <label>Файл</label>
+            <a href={currTask.attachedFile} className="form-control">
+              Скачать {currTask.fileName}
+            </a>
+          </div>
+        ): currTask.attachedFile.map((e,i) => {
+          return (
+              <p className="form-control" >
+              <a target="blank" href={e}>
+                  {currTask.fileName[i] || 'файл'}</a></p>
+          )
+      })
+      }
+    </>}
       <div className="form-group">
         <label>Решение</label>
         <input
@@ -164,7 +176,7 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
           required
         />
       </div>
-      <div className="form-group">
+      {currTask.status === 'toBeDone' && <div className="form-group">
         <label>Приложить файл решения</label>
         <input
           type="file"
@@ -175,7 +187,25 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
           multiple
           disabled={disableAfterAudio}
         />
-      </div>
+      </div>}
+
+      {(currTask.solutionFile && currTask.status !== 'toBeDone') && <div className="form-group">
+      <label>Файл(ы) решения</label>
+        {!Array.isArray(currTask.solutionFile) ? (
+        <>
+         
+            <a href={currTask.solutionFile} className="form-control">
+              Скачать {currTask.solutionFileName}
+            </a>
+        </>
+      ): currTask.solutionFile.map((e,i) => {
+        return (
+            <p className="form-control" >
+            <a target="blank" href={e}>
+                {currTask.solutionFileName[i] || 'файл'}</a></p>
+        )
+    })}
+      </div>}
       
       {currTask.status == "completed" ? (
         <>
@@ -203,44 +233,46 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
       )}
     { currTask.status === 'toBeDone' &&
       <button type="submit" className="btn btn-primary btn-block">
-        Отправить решение на проверку
+        {solutionUploading && <Oval height={20} width={20} />} {!solutionUploading ? 'Отправить решение на проверку' : 'Решение отправляется...'}
       </button>}
     </form>
-    <div className="form-group">
-        <label>Приложить аудиозапись</label>
-        <ol>
-        <li> Нажимаем кнопку записи (красную с микрофоном) </li>
-        <li> После окончания записи нажимаем на красную кнопку с квадратом </li>
-        <li> Нажимаем на кнопку Upload </li>
-        </ol>
-        <Recorder
-          record={true}
-          title={"Новая запись"}
-          audioURL={audioDetails.url}
-          showUIAudio
-          handleAudioStop={data => handleAudioStop(data)}
-          handleAudioUpload={data =>handleAudioUpload(data)}
-          handleRest={() => handleReset()}
-          mimeTypeToUseWhenRecording={'audio/webm'}
-          />
-      </div>
+    {currTask.status === 'toBeDone' && <div className="audio-video">
       <div className="form-group">
-      <label>Приложить видеозапись</label>
-        <ol>
-          <li>Нажимаем кнопку старт, разрешаем доступ к камере</li>
-          <li>Когда появляется видео, нажимаем "Начать запись"</li>
-          <li>После записи нажимаем "Остановить запись"</li>
-          <li>Нажимаем на кнопку "Загрузить видео"</li>
-        </ol>
-      <p>Camera status: {recordWebcam.status}</p>
-      <button onClick={recordWebcam.open}>СТАРТ</button>
-      <button onClick={recordWebcam.start}>Начать запись</button>
-      <button onClick={recordWebcam.stop}>Остановить запись</button>
-      <button onClick={recordWebcam.retake}>Записать видео заново</button>
-      <button onClick={saveFile}>Загрузить видео</button>
-      <video ref={recordWebcam.webcamRef} autoPlay muted />
-      <video ref={recordWebcam.previewRef} autoPlay muted loop />
-    </div>
+          <label>Приложить аудиозапись</label>
+          <ol>
+          <li> Нажимаем кнопку записи (красную с микрофоном) </li>
+          <li> После окончания записи нажимаем на красную кнопку с квадратом </li>
+          <li> Нажимаем на кнопку Upload </li>
+          </ol>
+          <Recorder
+            record={true}
+            title={"Новая запись"}
+            audioURL={audioDetails.url}
+            showUIAudio
+            handleAudioStop={data => handleAudioStop(data)}
+            handleAudioUpload={data =>handleAudioUpload(data)}
+            handleRest={() => handleReset()}
+            mimeTypeToUseWhenRecording={'audio/webm'}
+            />
+        </div>
+        <div className="form-group">
+        <label>Приложить видеозапись</label>
+          <ol>
+            <li>Нажимаем кнопку старт, разрешаем доступ к камере</li>
+            <li>Когда появляется видео, нажимаем "Начать запись"</li>
+            <li>После записи нажимаем "Остановить запись"</li>
+            <li>Нажимаем на кнопку "Загрузить видео"</li>
+          </ol>
+        <p>Camera status: {recordWebcam.status}</p>
+        <button onClick={recordWebcam.open}>СТАРТ</button>
+        <button onClick={recordWebcam.start}>Начать запись</button>
+        <button onClick={recordWebcam.stop}>Остановить запись</button>
+        <button onClick={recordWebcam.retake}>Записать видео заново</button>
+        <button onClick={saveFile}>Загрузить видео</button>
+        <video ref={recordWebcam.webcamRef} autoPlay muted />
+        <video ref={recordWebcam.previewRef} autoPlay muted loop />
+      </div>
+    </div>}
 </>
   );
 }
