@@ -208,6 +208,11 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
     </form>
     <div className="form-group">
         <label>Приложить аудиозапись</label>
+        <ol>
+        <li> Нажимаем кнопку записи (красную с микрофоном) </li>
+        <li> После окончания записи нажимаем на красную кнопку с квадратом </li>
+        <li> Нажимаем на кнопку Upload </li>
+        </ol>
         <Recorder
           record={true}
           title={"Новая запись"}
@@ -220,6 +225,13 @@ export default function SubmitSolution({currTask, currUser, closeSecondModal, lo
           />
       </div>
       <div className="form-group">
+      <label>Приложить видеозапись</label>
+        <ol>
+          <li>Нажимаем кнопку старт, разрешаем доступ к камере</li>
+          <li>Когда появляется видео, нажимаем "Начать запись"</li>
+          <li>После записи нажимаем "Остановить запись"</li>
+          <li>Нажимаем на кнопку "Загрузить видео"</li>
+        </ol>
       <p>Camera status: {recordWebcam.status}</p>
       <button onClick={recordWebcam.open}>СТАРТ</button>
       <button onClick={recordWebcam.start}>Начать запись</button>
